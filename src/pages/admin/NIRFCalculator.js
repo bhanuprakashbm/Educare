@@ -18,7 +18,7 @@ const NIRFCalculator = () => {
     outreach: 65,
     perception: 55,
   });
-  const [institutionName, setInstitutionName] = useState('Dr. Ambedkar Institute of Technology');
+  const [institutionName, setInstitutionName] = useState('EduCare Demo Institution');
 
   const handleChange = (key, value) => {
     setScores({ ...scores, [key]: Math.min(100, Math.max(0, Number(value))) });

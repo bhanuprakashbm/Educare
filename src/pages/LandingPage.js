@@ -235,11 +235,8 @@ const LandingPage = () => {
         <div style={{ marginBottom: '0.5rem' }}>
           <span style={{ color: 'white', fontWeight: 700, fontSize: '1.1rem' }}>EduCare</span>
         </div>
-        <p style={{ margin: 0, fontSize: '0.85rem' }}>
-          Unified Educational Data Management &amp; Institutional Performance Analytics Platform
-        </p>
         <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem' }}>
-          Dr. Ambedkar Institute of Technology, Bengaluru
+          Unified Educational Data Management &amp; Institutional Performance Analytics Platform
         </p>
       </footer>
     </div>
