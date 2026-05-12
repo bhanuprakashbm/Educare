@@ -36,7 +36,7 @@ A comprehensive MERN stack application for managing educational institutions, st
 - bcrypt.js
 
 ### AI Integration
-- Google Gemini AI for analytics and predictions
+- Groq AI for analytics and predictions
 
 ## Project Structure
 
@@ -127,7 +127,7 @@ JWT_SECRET=your_super_secret_jwt_key_change_this_in_production
 JWT_EXPIRE=7d
 PORT=5000
 NODE_ENV=development
-GEMINI_API_KEY=your_google_gemini_api_key_from_aistudio
+GROQ_API_KEY=your_groq_api_key_here
 FRONTEND_URL=http://localhost:3000
 ```
 

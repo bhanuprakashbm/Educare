@@ -33,7 +33,7 @@ const AIReportAnalyzer = () => {
       <div className="container-fluid py-4 px-4" style={{ background: '#f0f2f5', minHeight: '100vh' }}>
         <div className="mb-4">
           <h4 className="fw-bold mb-0" style={{ color: '#1a237e' }}>AI Academic Report Analyzer</h4>
-          <p className="text-muted small">Paste student academic data — Gemini AI generates deep insights, risk assessment & action plan</p>
+          <p className="text-muted small">Paste student academic data — AI generates deep insights, risk assessment & action plan</p>
         </div>
 
         <div className="row g-4">
@@ -78,8 +78,8 @@ const AIReportAnalyzer = () => {
                   <button type="submit" className="btn btn-primary w-100 py-2 fw-semibold"
                     disabled={loading} style={{ background: '#1a237e', border: 'none', borderRadius: 8 }}>
                     {loading ? (
-                      <><span className="spinner-border spinner-border-sm me-2" />Gemini AI is analyzing...</>
-                    ) : 'Analyze with Gemini AI'}
+                      <><span className="spinner-border spinner-border-sm me-2" />AI is analyzing...</>
+                    ) : 'Analyze'}
                   </button>
                 </form>
               </div>
