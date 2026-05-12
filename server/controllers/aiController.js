@@ -1,21 +1,29 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Groq = require('groq-sdk');
 const Student = require('../models/Student');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-// Helper: call Gemini with retry on rate limit
-const askGemini = async (prompt, retries = 3) => {
+// Helper: call Groq with retry on rate limit
+const askGroq = async (prompt, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
-      const result = await model.generateContent(prompt);
-      const text = result.response.text();
+      const completion = await groq.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: "llama-3.3-70b-versatile",
+        temperature: 0.7,
+        max_tokens: 1024,
+      });
+      
+      const text = completion.choices[0]?.message?.content || '';
       const jsonMatch = text.match(/```json\n?([\s\S]*?)\n?```/);
       if (jsonMatch) return JSON.parse(jsonMatch[1]);
       try { return JSON.parse(text); } catch { return { raw: text }; }
     } catch (err) {
-      if (err.message?.includes('429') && i < retries - 1) {
-        await new Promise(res => setTimeout(res, 10000));
+      // Handle rate limiting (429) and service unavailable (503)
+      if ((err.message?.includes('429') || err.message?.includes('503')) && i < retries - 1) {
+        const delay = Math.min(10000 * Math.pow(2, i), 30000); // Exponential backoff, max 30s
+        console.log(`AI service busy, retrying in ${delay/1000}s... (attempt ${i + 1}/${retries})`);
+        await new Promise(res => setTimeout(res, delay));
         continue;
       }
       throw err;
@@ -67,7 +75,7 @@ Respond ONLY with a JSON object in this exact format:
 \`\`\`
 `;
 
-    const analysis = await askGemini(prompt);
+    const analysis = await askGroq(prompt);
     res.json({ success: true, analysis });
   } catch (error) {
     next(error);
@@ -119,7 +127,7 @@ Respond ONLY with a JSON object:
 \`\`\`
 `;
 
-    const prediction = await askGemini(prompt);
+    const prediction = await askGroq(prompt);
 
     // Build chart data
     const chartData = records.map(r => ({ semester: `Sem ${r.semester}`, sgpa: r.sgpa, cgpa: r.cgpa }));
@@ -176,7 +184,7 @@ Respond ONLY with JSON:
 \`\`\`
 `;
 
-    const aiInsights = await askGemini(prompt);
+    const aiInsights = await askGroq(prompt);
 
     const enrichedRiskStudents = riskStudents.map(s => ({
       _id: s._id,
@@ -251,7 +259,7 @@ Respond ONLY with JSON:
 \`\`\`
 `;
 
-    const aiCard = await askGemini(prompt);
+    const aiCard = await askGroq(prompt);
 
     res.json({
       success: true,
@@ -341,7 +349,7 @@ Respond ONLY with JSON:
 \`\`\`
 `;
 
-    const aiInsight = await askGemini(prompt);
+    const aiInsight = await askGroq(prompt);
 
     res.json({
       success: true,
@@ -424,7 +432,7 @@ Respond ONLY with JSON:
 \`\`\`
 `;
 
-    const apariResult = await askGemini(prompt);
+    const apariResult = await askGroq(prompt);
     res.json({ success: true, apariResult, faculty: { name, designation, department } });
   } catch (error) {
     next(error);
@@ -478,7 +486,7 @@ Respond ONLY with JSON:
 \`\`\`
 `;
 
-    const impact = await askGemini(prompt);
+    const impact = await askGroq(prompt);
     res.json({ success: true, impact, faculty: { name, department, totalPublications: publications.length } });
   } catch (error) {
     next(error);
@@ -537,7 +545,7 @@ Respond ONLY with JSON:
 \`\`\`
 `;
 
-    const aiInsights = await askGemini(prompt);
+    const aiInsights = await askGroq(prompt);
 
     // Build chart data
     const chartData = workloadData.map(f => ({
